@@ -1,0 +1,58 @@
+[
+  {
+    "id": 7,
+    "sessionName": "Late Night Coding",
+    "startTime": "2026-05-10T01:23",
+    "endTime": "2026-05-10T02:23",
+    "stakes": "1/3",
+    "profit": -40.0
+  },
+  {
+    "id": 6,
+    "sessionName": "Shane's Cottage",
+    "startTime": "2026-05-09T22:50",
+    "endTime": "2026-05-10T00:46",
+    "stakes": "1/3",
+    "profit": -156.67
+  },
+  {
+    "id": 5,
+    "sessionName": "like each other",
+    "startTime": "2026-05-09T10:09",
+    "endTime": "2026-05-10T00:05",
+    "stakes": "1/2",
+    "profit": 100.0
+  },
+  {
+    "id": 4,
+    "sessionName": "Bobert's Dead",
+    "startTime": "2026-05-09T08:03",
+    "endTime": "2026-05-10T00:03",
+    "stakes": "1/2",
+    "profit": 56.0
+  },
+  {
+    "id": 3,
+    "sessionName": "Home Game",
+    "startTime": "2026-05-05T18:00",
+    "endTime": "2026-05-05T22:00",
+    "stakes": "1/2",
+    "profit": 95
+  },
+  {
+    "id": 2,
+    "sessionName": "Parx Late Night",
+    "startTime": "2026-05-03T21:00",
+    "endTime": "2026-05-04T01:45",
+    "stakes": "2/5",
+    "profit": -180
+  },
+  {
+    "id": 1,
+    "sessionName": "Borgata Afternoon Grind",
+    "startTime": "2026-05-01T14:00",
+    "endTime": "2026-05-01T19:30",
+    "stakes": "1/3",
+    "profit": 220
+  }
+]

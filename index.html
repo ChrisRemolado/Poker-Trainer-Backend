@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Poker Equity Calculator</h1>
+
+  <button id="calc">Compute Equity</button>
+  <p id="result"></p>
+
+  <script>
+    document.getElementById("calc").onclick = async () => {
+      const response = await fetch("http://localhost:8000/equity", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hero: ["As", "Kd"],
+          villain: ["Qc", "Qh"],
+          board: [],
+          trials: 5000
+        })
+      });
+
+      const data = await response.json();
+      document.getElementById("result").innerText = "Equity: " + data.equity;
+    };
+  </script>
+</body>
+</html>
