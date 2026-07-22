@@ -1,7 +1,7 @@
 [
   {
     "id": 7,
-    "sessionName": "Late Night Coding",
+    "sessionName": "Late Night at John's",
     "startTime": "2026-05-10T01:23",
     "endTime": "2026-05-10T02:23",
     "stakes": "1/3",
@@ -17,7 +17,7 @@
   },
   {
     "id": 5,
-    "sessionName": "like each other",
+    "sessionName": "Jackie's Neighbor",
     "startTime": "2026-05-09T10:09",
     "endTime": "2026-05-10T00:05",
     "stakes": "1/2",
@@ -25,7 +25,7 @@
   },
   {
     "id": 4,
-    "sessionName": "Bobert's Dead",
+    "sessionName": "Bobert's House",
     "startTime": "2026-05-09T08:03",
     "endTime": "2026-05-10T00:03",
     "stakes": "1/2",
