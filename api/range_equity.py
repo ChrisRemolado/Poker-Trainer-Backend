@@ -171,6 +171,80 @@ def range_vs_range_equity(
     hero_range_str: str,
     villain_range_str: str,
     board_str: str = "",
+    trials: int = 100,
+):
+    # -----------------------------
+    # 1. PRE-PARSE HERO RANGE ONCE
+    # -----------------------------
+    hero_classes = expand_range(hero_range_str)
+    hero_combos = []
+    for hc in hero_classes:
+        hero_combos.extend(parse_range(hc))
+
+    # -----------------------------
+    # 2. PRE-PARSE VILLAIN RANGE ONCE
+    # -----------------------------
+    if villain_range_str != "random":
+        villain_classes = expand_range(villain_range_str)
+        villain_combos_all = []
+        for vc in villain_classes:
+            villain_combos_all.extend(parse_range(vc))
+        villain_combos_all = list(set(villain_combos_all))
+    else:
+        villain_combos_all = all_2card_combos()
+
+    # -----------------------------
+    # 3. PRE-PARSE BOARD ONCE
+    # -----------------------------
+    used_cards = [board_str[i:i+2] for i in range(0, len(board_str), 2)]
+
+    # -----------------------------
+    # 4. FILTER HERO & VILLAIN BLOCKERS ONCE
+    # -----------------------------
+    hero_combos = filter_blocked(hero_combos, used_cards)
+    villain_combos_all = filter_blocked(villain_combos_all, used_cards)
+
+    if not hero_combos or not villain_combos_all:
+        raise ValueError("No valid combos after blocking.")
+
+    # -----------------------------
+    # 5. MAIN EQUITY LOOP
+    # -----------------------------
+    total_weight = 0
+    hero_wins = 0.0
+    villain_wins = 0.0
+    ties = 0.0
+
+    for h in hero_combos:
+        # villain combos that do not overlap hero
+        villain_combos = [v for v in villain_combos_all if not blocked(h, v)]
+
+        for v in villain_combos:
+            res = monte_carlo_equity(h, v, board_str, trials)
+
+            total_weight += 1
+            hero_wins += res["hero_win"]
+            villain_wins += res["villain_win"]
+            ties += res["tie"]
+
+    # -----------------------------
+    # 6. NORMALIZE
+    # -----------------------------
+    hero_eq = hero_wins / total_weight
+    villain_eq = villain_wins / total_weight
+    tie_eq = ties / total_weight
+
+    return {
+        "hero_win": hero_eq,
+        "villain_win": villain_eq,
+        "tie": tie_eq,
+    }
+
+'''
+def range_vs_range_equity(
+    hero_range_str: str,
+    villain_range_str: str,
+    board_str: str = "",
     trials: int = 5000,
 ):
     # 0) Expand hero and villain ranges into hand classes
@@ -202,11 +276,11 @@ def range_vs_range_equity(
         ALL_VILLAIN_COMBOS = list(set(ALL_VILLAIN_COMBOS))
         ALL = ALL_VILLAIN_COMBOS
         rev = [c for c in ALL if c[2:] + c[:2] in ALL]
-        '''
+        
         print(len(ALL_VILLAIN_COMBOS))
         print("Reversed combos:", len(rev))
         print(rev[:20])
-        '''
+        
 
         # Filter board blockers ONCE
         ALL_VILLAIN_COMBOS = filter_blocked(ALL_VILLAIN_COMBOS, used_cards)
@@ -288,3 +362,4 @@ def range_vs_range_equity(
         "villain_win": villain_eq,
         "tie": tie_eq,
     }
+'''

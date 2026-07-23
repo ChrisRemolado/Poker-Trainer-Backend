@@ -373,7 +373,7 @@ def debug_range(r: str):
     }
 
 @app.get("/debug_heatmap")
-def debug_heatmap(trials: int = 8):
+def debug_heatmap(trials: int = 20):
     #villain_range = "random"
     villain_range = "22+,A2s+,K2s+,Q2s+,J2s+,T2s+,92s+,82s+,72s+,62s+,52s+,42s+,32s,A2o+,K2o+,Q2o+,J2o+,T2o+,92o+,82o+,72o+,62o+,52o+,42o+,32o"
     hero_range = "ALL"        # your heatmap generator ignores this anyway
