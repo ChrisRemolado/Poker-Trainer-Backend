@@ -42,7 +42,7 @@ class EquityRequest(BaseModel):
     hero: str
     villain: str = "random"
     board: Union[str, List[str]] = ""
-    trials: int = 100
+    trials: int = 500
 
 class EquityResponse(BaseModel):
     hero_win: float
@@ -53,13 +53,13 @@ class RangeEquityRequest(BaseModel):
     hero_range: str
     villain_range: str
     board: str = ""
-    trials: int = 100
+    trials: int = 500
 
 class HeatmapRequest(BaseModel):
     hero_range: str
     villain_range: str
     board: str = ""
-    trials: int = 100
+    trials: int = 500
 
 class PlaySessionRequest(BaseModel):
     id: int = 0
@@ -251,7 +251,7 @@ def hand_equity(payload: dict):
     hero = payload.get("hero")
     villain = payload.get("villain", "random")
     board = payload.get("board", "")
-    trials = payload.get("trials", 100)
+    trials = payload.get("trials", 500)
 
     if not hero:
         return {"error": "hero hand required"}
