@@ -270,11 +270,27 @@ def hand_equity(payload: dict):
 
 @app.post("/range_equity")
 def range_equity(req: RangeEquityRequest):
+
+    # Expand hero range
+    hero_classes = expand_range(req.hero_range)
+    hero_combos = []
+    for hc in hero_classes:
+        hero_combos.extend(parse_range(hc))
+
+    # Expand villain range
+    villain_classes = expand_range(req.villain_range)
+    villain_combos_all = []
+    for vc in villain_classes:
+        villain_combos_all.extend(parse_range(vc))
+
+    villain_combos_all = list(set(villain_combos_all))
+
+    # Compute equity
     return range_vs_range_equity(
-        hero_range_str=req.hero_range,
-        villain_range_str=req.villain_range,
-        board_str=req.board,
-        trials=req.trials
+        hero_combos,
+        villain_combos_all,
+        req.board,
+        req.trials
     )
 
 def normalize_range(r):
