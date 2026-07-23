@@ -399,26 +399,31 @@ def debug_range(r: str):
 
 @app.get("/debug_heatmap")
 def debug_heatmap(trials: int = 20):
-    # 1. Build full villain combo list ONCE
-    villain_combos_all = all_2card_combos()  # 1326 combos
+    # Full villain combos
+    all_villain = all_2card_combos()
 
     results = {}
 
     for hand in ALL_169_HANDS:
 
-        # 2. Expand hero hand into combos (e.g., "AKs" -> 4 combos)
+        # Expand hero combos
         hero_classes = expand_range(hand)
         hero_combos = []
         for hc in hero_classes:
             hero_combos.extend(parse_range(hc))
 
-        # 3. Filter villain combos that don't block hero
+        # Filter villain combos that don't block hero
         villain_combos = [
-            v for v in villain_combos_all
-            if not blocked(hero_combos[0], v)  # hero_combos[0] is fine for blocking
+            v for v in all_villain
+            if not blocked(hero_combos[0], v)
         ]
 
-        # 4. Compute equity using optimized function
+        # ⭐ SAMPLE villain combos (critical optimization)
+        SAMPLE_SIZE = 80   # safe for Render
+        if len(villain_combos) > SAMPLE_SIZE:
+            villain_combos = random.sample(villain_combos, SAMPLE_SIZE)
+
+        # Compute equity
         equity = range_vs_range_equity(
             hero_combos,
             villain_combos,
@@ -430,4 +435,3 @@ def debug_heatmap(trials: int = 20):
         results[hand] = hero_equity
 
     return results
-
