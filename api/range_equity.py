@@ -168,57 +168,37 @@ def hand_vs_range_equity(
     return res
 
 def range_vs_range_equity(
-    hero_range_str: str,
-    villain_range_str: str,
-    board_str: str = "",
-    trials: int = 100,
+    hero_combos,
+    villain_combos_all,
+    board_str="",
+    trials=50
 ):
-    # -----------------------------
-    # 1. PRE-PARSE HERO RANGE ONCE
-    # -----------------------------
-    hero_classes = expand_range(hero_range_str)
-    hero_combos = []
-    for hc in hero_classes:
-        hero_combos.extend(parse_range(hc))
+    """
+    Optimized equity calculator:
+    - hero_combos: list of 2-card hero combos (already expanded)
+    - villain_combos_all: list of 2-card villain combos (already expanded & filtered)
+    - board_str: string like "AhKdQs" or ""
+    - trials: Monte Carlo trials per hero/villain combo pair
+    """
 
-    # -----------------------------
-    # 2. PRE-PARSE VILLAIN RANGE ONCE
-    # -----------------------------
-    if villain_range_str != "random":
-        villain_classes = expand_range(villain_range_str)
-        villain_combos_all = []
-        for vc in villain_classes:
-            villain_combos_all.extend(parse_range(vc))
-        villain_combos_all = list(set(villain_combos_all))
-    else:
-        villain_combos_all = all_2card_combos()
+    # Parse board once
+    board_cards = [board_str[i:i+2] for i in range(0, len(board_str), 2)]
 
-    # -----------------------------
-    # 3. PRE-PARSE BOARD ONCE
-    # -----------------------------
-    used_cards = [board_str[i:i+2] for i in range(0, len(board_str), 2)]
-
-    # -----------------------------
-    # 4. FILTER HERO & VILLAIN BLOCKERS ONCE
-    # -----------------------------
-    hero_combos = filter_blocked(hero_combos, used_cards)
-    villain_combos_all = filter_blocked(villain_combos_all, used_cards)
-
-    if not hero_combos or not villain_combos_all:
-        raise ValueError("No valid combos after blocking.")
-
-    # -----------------------------
-    # 5. MAIN EQUITY LOOP
-    # -----------------------------
     total_weight = 0
     hero_wins = 0.0
     villain_wins = 0.0
     ties = 0.0
 
+    # Loop hero combos
     for h in hero_combos:
-        # villain combos that do not overlap hero
-        villain_combos = [v for v in villain_combos_all if not blocked(h, v)]
 
+        # Filter villain combos that don't block hero
+        villain_combos = [
+            v for v in villain_combos_all
+            if not blocked(h, v)
+        ]
+
+        # Monte Carlo for each villain combo
         for v in villain_combos:
             res = monte_carlo_equity(h, v, board_str, trials)
 
@@ -227,9 +207,10 @@ def range_vs_range_equity(
             villain_wins += res["villain_win"]
             ties += res["tie"]
 
-    # -----------------------------
-    # 6. NORMALIZE
-    # -----------------------------
+    if total_weight == 0:
+        return {"hero_win": 0, "villain_win": 0, "tie": 1}
+
+    # Normalize
     hero_eq = hero_wins / total_weight
     villain_eq = villain_wins / total_weight
     tie_eq = ties / total_weight

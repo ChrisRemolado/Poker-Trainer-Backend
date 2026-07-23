@@ -294,18 +294,43 @@ def heatmap(req: HeatmapRequest):
     hero_range = normalize_range(req.hero_range)
     villain_range = normalize_range(req.villain_range)
     board = req.board
-    trials = req.trials
+    trials = max(10, min(req.trials, 50))  # clamp trials for Render
+
+    # PRE-PARSE villain range ONCE
+    villain_classes = expand_range(villain_range)
+    villain_combos_all = []
+    for vc in villain_classes:
+        villain_combos_all.extend(parse_range(vc))
+    villain_combos_all = list(set(villain_combos_all))
+
+    # PRE-PARSE board ONCE
+    used_cards = [board[i:i+2] for i in range(0, len(board), 2)]
+
+    # FILTER villain combos ONCE
+    villain_combos_all = filter_blocked(villain_combos_all, used_cards)
 
     results = {}
+
     for hand in ALL_169_HANDS:
+        # PRE-PARSE hero hand ONCE
+        hero_classes = expand_range(hand)
+        hero_combos = []
+        for hc in hero_classes:
+            hero_combos.extend(parse_range(hc))
+
+        hero_combos = filter_blocked(hero_combos, used_cards)
+
+        # Compute equity using optimized function
         equity = range_vs_range_equity(
-            hand,  # hero range
-            villain_range,  # villain range
-            "",  # board
-            trials  # trials
+            hero_combos,              # pass combos directly
+            villain_combos_all,       # pass combos directly
+            board,
+            trials
         )
+
         hero_equity = equity["hero_win"] + equity["tie"] / 2
         results[hand] = hero_equity
+
     return results
 
 # -----------------------------
