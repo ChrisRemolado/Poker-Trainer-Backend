@@ -398,9 +398,12 @@ def debug_range(r: str):
     }
 
 @app.get("/debug_heatmap")
-def debug_heatmap(trials: int = 20):
+def debug_heatmap(trials: int = 5):
     # Full villain combos
     all_villain = all_2card_combos()
+
+    # Reduce villain sample size drastically
+    SAMPLE_SIZE = 20
 
     results = {}
 
@@ -418,8 +421,7 @@ def debug_heatmap(trials: int = 20):
             if not blocked(hero_combos[0], v)
         ]
 
-        # ⭐ SAMPLE villain combos (critical optimization)
-        SAMPLE_SIZE = 80   # safe for Render
+        # SAMPLE villain combos (critical)
         if len(villain_combos) > SAMPLE_SIZE:
             villain_combos = random.sample(villain_combos, SAMPLE_SIZE)
 
